@@ -170,6 +170,6 @@ if __name__ == "__main__":
     print(score) 
     print("running time: %s " % (time.time() - start_time))
 
-    with open("debug-" + filename, "w") as f:
+    with open("debug-" + filename[:-5] + ".txt", "w") as f:
         for instance in debug:
             f.write(instance + "\n")
