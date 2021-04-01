@@ -314,15 +314,6 @@ if __name__ == "__main__":
         print("Please provide a json file...")
         sys.exit(1)
 
-    # if (len(sys.argv) > 2):
-    #     n_nodes = int(sys.argv[2])
-    #     n_cores = int(sys.argv[3])
-    # else:
-    #     n_nodes = 1
-    #     n_cores = 1
-
-    print("name: {}, rank: {}, size: {}".format(filename, rank, world.Get_size()))
-
     # initiate via rank
     if rank == 0:
         scores = master(world, filename)
