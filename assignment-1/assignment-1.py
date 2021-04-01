@@ -306,9 +306,6 @@ if __name__ == "__main__":
     world = MPI.COMM_WORLD
     rank = world.Get_rank()
 
-    if rank == 0:
-        start_time = time.time()
-        print("------------      log       -------------")
 
     # --------------- read argv -------------------
     try:
@@ -334,8 +331,6 @@ if __name__ == "__main__":
     
     if rank == 0:
         print(scores)
-        print("running time: %s " % (time.time() - start_time))
-        print("------------ finish logging -------------")
 
     # with open("debug-" + filename[:-5] + ".txt", "w") as f:
     #     for instance in debug:
