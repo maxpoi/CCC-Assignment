@@ -1,7 +1,7 @@
 def func():
 
     f = open("debug-smallTwitter.txt", "r")
-    g = open("log.txt", "r")
+    g = open("matches.txt", "r")
 
     i = 0
     while True:
@@ -28,4 +28,4 @@ def visisual():
         i += 1
 
 if __name__ == "__main__":
-    visisual()
+    func()

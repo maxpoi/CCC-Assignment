@@ -7,7 +7,7 @@
 #SBATCH --ntasks-per-node=1
 
 # The maximum running time of the job in days-hours:mins:sec
-#SBATCH --time=0-2:0:00
+#SBATCH --time=0-0:15:00
 
 # Run the job from the directory where it was launched (default)
 
