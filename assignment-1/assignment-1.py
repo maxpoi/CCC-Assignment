@@ -45,12 +45,16 @@ f.close()
 # --------- finish reading melbGrid --------- #
 
 
+# -------------------------------------------- #
+#              utility functions               #
+# -------------------------------------------- #
+
 def get_grid(x, y, grid=melbGrid):
     '''
-    x, y, grid: float
+        x, y, grid: float
 
-    return:
-        The grid num it is in: String
+        return:
+            The grid num it is in: String
     '''
     x = float(x)
     y = float(y)
@@ -66,14 +70,15 @@ def get_grid(x, y, grid=melbGrid):
 
 
 
-def extract_field(line):
-    """
-    line: input string.
 
-    return: 2 strings, both are enclosed by "{}"
-            1st string is the location data in json format, e.g., {"location": [xx, yy]}
-            2nd string is the tweet data in json format, e.g., {"text": "sdsd"}
-    """
+def extract_field(line):
+    '''
+        line: input string.
+
+        return: 2 strings, both are enclosed by "{}"
+                1st string is the location data in json format, e.g., {"location": [xx, yy]}
+                2nd string is the tweet data in json format, e.g., {"text": "sdsd"}
+    '''
 
     # remove \n
     line = line.strip()
@@ -94,51 +99,19 @@ def extract_field(line):
 
     return location, tweet
 
-def preprocess_word(word):
-    punctuations = set(["!", ",", "?", ".", "'", '"', "‘", "’", "“", "”"])
-
-    ret = ""
-
-    start = 0
-    if word[0] == '"' or word[0] == '"':
-        start = 1
-    for i in range(start, len(word)):
-        ch = word[i:i+1]
-        if ch in punctuations:
-            if ch != "'" and ch != "’" and ch != "‘":
-                ret += " "
-            else:
-                if i-3 > -1 and i+1 < len(word):
-                    # only keep ',
-                    # if ' is part of can't
-                    if "can't" == word[i-3:i+2]:
-                        # and can't is the last word, or
-                        # the next character is in punctuations
-                        if i+2 == len(word) or i+2 < len(word) and word[i+2:i+3] in punctuations:
-                            ret += "'"
-                        else:
-                            ret += " "
-                    else:
-                        ret += " "
-                else:
-                    ret += " "
-
-                # if i+1 == len(word):
-                #     ret += " "
-                # elif i+2 == len(word):
-                #     if word[i+1:i+2].isalpha():
-                #         ret += "'"
-                #     else:
-                #         ret += " "
-                # else:
-                #     ret += " "
-        else:
-            ret += ch
-    # print(word, ret)
-    return ret
 
 
+
+
+# -------------------------------------------- #
+#                main functions                #
+# -------------------------------------------- #
 def preprocess_tweet(scores, loc, tweet):
+    '''
+        given a tweet,
+        calculate its score and update to the 'scores'
+        with key=loc
+    '''
 
     if loc == None:
         loc = outside
@@ -146,7 +119,10 @@ def preprocess_tweet(scores, loc, tweet):
     debug = []
 
     tweet = json.loads(tweet)["text"]
-    # pre_words = tweet.lower().split()
+
+    # use re.split to split string by different eliminators. 
+    # include http & https to remove hyperlinks
+    # include filter to remove empty strings
     words = list(filter(None, re.split(r'(?:[!.?,\'\"\‘\’\“\”\s]|http://\S+|https://\S+)', tweet.lower())))
     len_words = len(words)
 
@@ -204,15 +180,17 @@ def preprocess_tweet(scores, loc, tweet):
 
     return scores, debug
 
+
+
+
+# -------------------------------------------- #
+#                 mpi functions                #
+# -------------------------------------------- #
 def get_score_individual(filename, scores, rank, num_cores):
     '''
-    filename: must be a json file
+        filename: must be a json file
     '''
     debug = []
-
-    # for grid_info in melbGrid:
-    #     scores[grid_info['properties']['id']] = 0
-    # ------- finish initializing ------- #
 
     counter = 0
     with open(filename, "r") as f:
@@ -246,6 +224,7 @@ def get_score_individual(filename, scores, rank, num_cores):
     f.close()
 
     return scores, debug   
+
 
 
 def collect_scores(world):
